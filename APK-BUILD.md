@@ -1,16 +1,35 @@
-# Android APK packaging notes
+# Build and install Carrom Royale APK
 
-1. Download the repository ZIP from GitHub.
-2. Extract it. Keep `index.html`, `styles.css` and `game.js` together in the same folder.
-3. In your APK builder, choose the local HTML / WebView app option and select `index.html` as the start page.
-4. Enable JavaScript, local file access as needed by that builder, WebRTC and DataChannels, and network access.
-5. Set portrait orientation and a recent Android WebView/Chromium runtime.
-6. Build a debug APK first. Install it on both phones and test the LAN offer/answer connection.
-7. Only create a release APK after the full two-phone test passes.
+The repository includes an Android WebView wrapper and a GitHub Actions workflow.
 
-## Important
+## Automatic build
 
-- The game does not need a hosted game server or internet once a peer-to-peer LAN connection is established.
-- WebRTC support in Android WebView varies by APK builder. If `RTCPeerConnection` is unavailable, that builder cannot run this multiplayer implementation without a more capable native wrapper.
-- The manual offer/answer exchange is intentional in this no-signalling-server version.
-- Bluetooth is not implemented. This project uses Wi-Fi LAN with WebRTC.
+Every push to the main branch that changes the game or Android wrapper starts **Build Carrom Royale APK**.
+
+- The workflow copies the current `index.html`, `styles.css` and `game.js` into Android app assets.
+- It builds a debug APK with Android Gradle Plugin.
+- It uploads the APK as a workflow artifact and publishes a GitHub Release asset.
+
+After a successful run, download the APK from the repository's Releases page:
+https://github.com/sathsindusandeepana220908-pixel/Carrom/releases/latest
+
+## Local build
+
+Requirements: JDK 17, Android SDK platform 35, Android build tools 35.0.0 and Gradle 8.9.
+
+From the repository root:
+
+```sh
+mkdir -p android/app/src/main/assets
+cp index.html styles.css game.js android/app/src/main/assets/
+gradle -p android assembleDebug
+```
+
+APK output:
+`android/app/build/outputs/apk/debug/app-debug.apk`
+
+## Phone compatibility
+
+The wrapper uses Android System WebView and AndroidX WebViewAssetLoader. Update Android System WebView / Chrome on the phone if available. WebRTC DataChannel support depends on the installed WebView version and the local Wi-Fi router.
+
+The APK is a debug-signed, sideloadable test build, not a Play Store release. The app uses Wi-Fi LAN/WebRTC; Bluetooth transport is not included.

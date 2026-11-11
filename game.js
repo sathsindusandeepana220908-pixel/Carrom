@@ -1,7 +1,8 @@
 (()=>{'use strict';
-const $=id=>document.getElementById(id),canvas=$('board'),ctx=canvas.getContext('2d'),SIZE=800,POCKETS=[[55,55],[745,55],[55,745],[745,745]],FRICTION=.986,REST=.86;
+const $=id=>document.getElementById(id),canvas=$('board');let ctx=canvas.getContext('2d');const SIZE=800,POCKETS=[[55,55],[745,55],[55,745],[745,745]],FRICTION=.986,REST=.86;
 let role='local',peer=null,channel=null,dragging=false,aimPoint=null,lastFrame=0,lastDraw=0,accumulator=0,raf=0,soundOn=true,audioContext=null,lastCollisionSound=0;
-const boardCache=document.createElement('canvas');boardCache.width=boardCache.height=SIZE;const boardCtx=boardCache.getContext('2d');let boardReady=false;\nconst G={coins:[],striker:null,turn:0,scores:[0,0],moving:false,shot:false,queenPocketed:false,queenPending:false,queenNeedsCover:false,finished:false,winner:null,shots:0,notice:'PLAYER 1 TURN'};
+const boardCache=document.createElement('canvas');boardCache.width=boardCache.height=SIZE;const boardCtx=boardCache.getContext('2d');let boardReady=false;
+const G={coins:[],striker:null,turn:0,scores:[0,0],moving:false,shot:false,queenPocketed:false,queenPending:false,queenNeedsCover:false,finished:false,winner:null,shots:0,notice:'PLAYER 1 TURN'};
 const coin=(x,y,color,id)=>({x,y,vx:0,vy:0,color,id,r:color==='striker'?23:18.5,active:true});
 function makeRack(){G.coins=[];let id=0;G.coins.push(coin(400,400,'queen',id++));for(let i=0;i<6;i++){const a=i*Math.PI/3;G.coins.push(coin(400+39*Math.cos(a),400+39*Math.sin(a),i%2?'black':'white',id++))}for(let i=0;i<12;i++){const a=i*Math.PI/6+Math.PI/12;G.coins.push(coin(400+78*Math.cos(a),400+78*Math.sin(a),i%2?'white':'black',id++))}G.turn=0;G.scores=[0,0];G.queenPocketed=false;G.queenPending=false;G.queenNeedsCover=false;G.finished=false;G.winner=null;G.shots=0;G.moving=false;G.shot=false;placeStriker();G.notice='PLAYER 1 TURN';updateHUD();draw();broadcastState(true)}
 function placeStriker(){G.striker=coin(400,G.turn===0?660:140,'striker','striker')}

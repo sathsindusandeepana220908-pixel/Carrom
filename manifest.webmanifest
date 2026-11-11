@@ -1,0 +1,10 @@
+{
+  "name": "Carrom Royale",
+  "short_name": "Carrom Royale",
+  "description": "2D carrom for two players on one phone or over local Wi-Fi.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#16070e",
+  "theme_color": "#390d21"
+}

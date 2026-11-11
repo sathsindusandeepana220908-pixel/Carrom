@@ -41,7 +41,6 @@ public class MainActivity extends Activity {
                 return assetLoader.shouldInterceptRequest(request.getUrl());
             }
         });
-        WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG);
         webView.loadUrl("https://appassets.androidplatform.net/assets/index.html");
     }
 
